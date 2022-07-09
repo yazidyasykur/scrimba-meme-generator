@@ -1,5 +1,4 @@
 import React from "react"
-import memesData from "../memesData"
 
 function Meme() {
 
@@ -9,11 +8,22 @@ function Meme() {
         randomImage: "http://i.imgflip.com/1bij.jpg"
     })
 
-    const [allMemeImages, setAllMemeImages] = React.useState(memesData)
+
+
+    const [allMemeImages, setAllMemeImages] = React.useState({})
 
     function randomNumber(length) {
         return Math.floor(Math.random() * length);
     }
+
+    React.useEffect(() => {
+        const fetchData = async () => {
+            const data = await fetch('https://api.imgflip.com/get_memes');
+            const json = await data.json();
+            setAllMemeImages(json)
+        }
+        fetchData()
+    }, [])
 
     function handleClick() {
         let randomIndex = randomNumber(allMemeImages.data.memes.length)
@@ -25,30 +35,30 @@ function Meme() {
         )
     }
 
-    function handleChange(event){
-        const {name, value} = event.target
+    function handleChange(event) {
+        const { name, value } = event.target
         setMeme(prevState => ({
             ...prevState,
-            [name] : value
+            [name]: value
         }))
     }
 
     return (
         <div className="form-container">
             <div className="text-input">
-                <input 
-                type="text" 
-                placeholder="Top Text" 
-                onChange={handleChange}
-                name="topText"
-                value={meme.topText}
+                <input
+                    type="text"
+                    placeholder="Top Text"
+                    onChange={handleChange}
+                    name="topText"
+                    value={meme.topText}
                 />
-                <input 
-                type="text" 
-                placeholder="Bottom Text" 
-                onChange={handleChange}
-                name="bottomText"
-                value={meme.bottomText}
+                <input
+                    type="text"
+                    placeholder="Bottom Text"
+                    onChange={handleChange}
+                    name="bottomText"
+                    value={meme.bottomText}
                 />
                 <button type="submit" className="submit-button" onClick={handleClick}>Get a new Meme image</button>
             </div>
